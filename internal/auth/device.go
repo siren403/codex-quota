@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -29,10 +30,23 @@ type deviceUserCodeRequest struct {
 	ClientID string `json:"client_id"`
 }
 
+// flexInt unmarshals JSON values that may be either a number or a quoted string.
+type flexInt int
+
+func (f *flexInt) UnmarshalJSON(data []byte) error {
+	s := strings.Trim(string(data), `"`)
+	n, err := strconv.Atoi(s)
+	if err != nil {
+		return err
+	}
+	*f = flexInt(n)
+	return nil
+}
+
 type deviceUserCodeResponse struct {
-	DeviceAuthID string `json:"device_auth_id"`
-	UserCode     string `json:"user_code"`
-	Interval     int    `json:"interval"`
+	DeviceAuthID string  `json:"device_auth_id"`
+	UserCode     string  `json:"user_code"`
+	Interval     flexInt `json:"interval"`
 }
 
 type deviceTokenRequest struct {
@@ -77,7 +91,7 @@ func StartDeviceLogin() (DeviceLoginStatus, error) {
 		return DeviceLoginStatus{}, err
 	}
 
-	interval := resp.Interval
+	interval := int(resp.Interval)
 	if interval <= 0 {
 		interval = 5
 	}
