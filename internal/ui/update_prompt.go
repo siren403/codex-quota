@@ -7,8 +7,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/deLiseLINO/codex-quota/internal/update"
-	"github.com/deLiseLINO/codex-quota/internal/version"
+	"github.com/siren403/codex-quota/internal/update"
+	"github.com/siren403/codex-quota/internal/version"
 )
 
 const (
@@ -79,7 +79,7 @@ func (m Model) renderUpdatePromptModal() string {
 		UpdateHintStyle.Render("Update available"),
 		InfoValueStyle.Render(fmt.Sprintf("%s -> %s", version.Current(), m.UpdatePromptVersion)),
 		"",
-		InfoValueStyle.Render("Release notes: https://github.com/deLiseLINO/codex-quota/releases/latest"),
+		InfoValueStyle.Render("Release notes: https://github.com/siren403/codex-quota/releases/latest"),
 		"",
 		renderUpdatePromptOption(1, "Update now", command, m.UpdatePromptCursor == updatePromptChoiceNow),
 		renderUpdatePromptOption(2, "Skip", "", m.UpdatePromptCursor == updatePromptChoiceSkip),

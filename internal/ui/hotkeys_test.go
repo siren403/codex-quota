@@ -8,8 +8,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/deLiseLINO/codex-quota/internal/api"
-	"github.com/deLiseLINO/codex-quota/internal/config"
+	"github.com/siren403/codex-quota/internal/api"
+	"github.com/siren403/codex-quota/internal/config"
 )
 
 func TestArrowNavigationWorksInBothModes(t *testing.T) {

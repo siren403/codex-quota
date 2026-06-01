@@ -8,8 +8,8 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
 
-	"github.com/deLiseLINO/codex-quota/internal/api"
-	"github.com/deLiseLINO/codex-quota/internal/config"
+	"github.com/siren403/codex-quota/internal/api"
+	"github.com/siren403/codex-quota/internal/config"
 )
 
 func forceTrueColor(t *testing.T) {

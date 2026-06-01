@@ -3,7 +3,7 @@ package ui
 import (
 	"strings"
 
-	"github.com/deLiseLINO/codex-quota/internal/config"
+	"github.com/siren403/codex-quota/internal/config"
 )
 
 func (m Model) activeSourceBadgesForAccount(account *config.Account) string {

@@ -9,7 +9,7 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/deLiseLINO/codex-quota/internal/api"
+	"github.com/siren403/codex-quota/internal/api"
 )
 
 const windowRowIndent = "    "

@@ -7,7 +7,7 @@ import (
 
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/deLiseLINO/codex-quota/internal/api"
+	"github.com/siren403/codex-quota/internal/api"
 )
 
 func TestRenderWindowRow_StaysWithinViewportWidth(t *testing.T) {

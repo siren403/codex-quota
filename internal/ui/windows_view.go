@@ -6,7 +6,7 @@ import (
 
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/deLiseLINO/codex-quota/internal/api"
+	"github.com/siren403/codex-quota/internal/api"
 )
 
 func (m Model) renderWindowsView() string {

@@ -1,4 +1,4 @@
-module github.com/deLiseLINO/codex-quota
+module github.com/siren403/codex-quota
 
 go 1.25
 

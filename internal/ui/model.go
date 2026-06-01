@@ -7,9 +7,9 @@ import (
 	"github.com/charmbracelet/bubbles/progress"
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/deLiseLINO/codex-quota/internal/api"
-	"github.com/deLiseLINO/codex-quota/internal/config"
-	"github.com/deLiseLINO/codex-quota/internal/update"
+	"github.com/siren403/codex-quota/internal/api"
+	"github.com/siren403/codex-quota/internal/config"
+	"github.com/siren403/codex-quota/internal/update"
 )
 
 type Model struct {
@@ -33,6 +33,10 @@ type Model struct {
 	AddAccountLoginURL      string
 	AddAccountBrowserFailed bool
 	AddAccountLoginStatus   string
+	DeviceLoginVisible      bool
+	DeviceLoginUserCode     string
+	DeviceLoginVerifyURL    string
+	DeviceLoginStatus       string
 	ShowInfo                bool
 	Notice                  string
 	noticeSeq               int
@@ -181,6 +185,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.AddAccountLoginVisible {
 			return m.handleAddAccountLogin(keyStr)
 		}
+		if m.DeviceLoginVisible {
+			return m.handleDeviceLogin(keyStr)
+		}
 		if m.ActionMenuVisible {
 			return m.handleActionMenu(keyStr)
 		}
@@ -260,6 +267,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "n":
 			return m.beginAddAccount()
+
+		case "d":
+			return m.beginDeviceLogin()
 
 		case "o":
 			return m.beginApplyFlow()
@@ -469,6 +479,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, FinalizeAddAccountLoginCmd(msg.Account)
 
 	case AddAccountLoginCopyResultMsg:
+		if m.DeviceLoginVisible {
+			if msg.Err != nil {
+				m.DeviceLoginStatus = msg.Err.Error()
+			} else {
+				m.DeviceLoginStatus = strings.TrimSpace(msg.Text)
+			}
+			return m, nil
+		}
 		if !m.AddAccountLoginVisible {
 			return m, nil
 		}
@@ -478,6 +496,38 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		m.AddAccountLoginStatus = strings.TrimSpace(msg.Text)
 		return m, nil
+
+	case DeviceLoginStartedMsg:
+		m.DeviceLoginVisible = true
+		m.DeviceLoginUserCode = strings.TrimSpace(msg.UserCode)
+		m.DeviceLoginVerifyURL = strings.TrimSpace(msg.VerifyURL)
+		m.DeviceLoginStatus = ""
+		m.Loading = false
+		m.Err = nil
+		m.Notice = ""
+		return m, PollDeviceLoginCmd()
+
+	case DeviceLoginPendingMsg:
+		if !m.DeviceLoginVisible {
+			return m, nil
+		}
+		return m, PollDeviceLoginCmd()
+
+	case DeviceLoginFinishedMsg:
+		if !m.DeviceLoginVisible {
+			return m, nil
+		}
+		m.resetDeviceLoginState()
+		m.Loading = false
+		if msg.Err != nil {
+			m.Err = fmt.Errorf("device login failed: %w", msg.Err)
+			return m, nil
+		}
+		if msg.Account == nil {
+			m.Err = fmt.Errorf("device login failed: empty account result")
+			return m, nil
+		}
+		return m, FinalizeAddAccountLoginCmd(msg.Account)
 
 	case ErrMsg:
 		if m.ErrorsMap == nil {
@@ -503,6 +553,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.AddAccountLoginURL = ""
 		m.AddAccountBrowserFailed = false
 		m.AddAccountLoginStatus = ""
+		m.resetDeviceLoginState()
 		m.resetDeleteState()
 		m.resetApplyState()
 		return m, nextCmd

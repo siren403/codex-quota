@@ -10,10 +10,10 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/deLiseLINO/codex-quota/internal/config"
-	"github.com/deLiseLINO/codex-quota/internal/ui"
-	"github.com/deLiseLINO/codex-quota/internal/update"
-	"github.com/deLiseLINO/codex-quota/internal/version"
+	"github.com/siren403/codex-quota/internal/config"
+	"github.com/siren403/codex-quota/internal/ui"
+	"github.com/siren403/codex-quota/internal/update"
+	"github.com/siren403/codex-quota/internal/version"
 )
 
 type command int

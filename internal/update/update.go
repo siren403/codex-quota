@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/deLiseLINO/codex-quota/internal/config"
+	"github.com/siren403/codex-quota/internal/config"
 )
 
 type Method string
@@ -28,8 +28,8 @@ const (
 	refreshInterval       = 5 * time.Minute
 	latestReleaseURL      = "https://api.github.com/repos/deLiseLINO/codex-quota/releases/latest"
 	homebrewFormulaURL    = "https://raw.githubusercontent.com/deLiseLINO/homebrew-tap/main/Formula/codex-quota.rb"
-	releasesPageURL       = "https://github.com/deLiseLINO/codex-quota/releases"
-	goInstallTarget       = "github.com/deLiseLINO/codex-quota/cmd/cq@latest"
+	releasesPageURL       = "https://github.com/siren403/codex-quota/releases"
+	goInstallTarget       = "github.com/siren403/codex-quota/cmd/cq@latest"
 	homebrewUpgradeTarget = "deLiseLINO/tap/codex-quota"
 )
 

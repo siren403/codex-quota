@@ -6,7 +6,7 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/deLiseLINO/codex-quota/internal/config"
+	"github.com/siren403/codex-quota/internal/config"
 )
 
 func (m Model) currentOverlayModal() string {
@@ -20,6 +20,10 @@ func (m Model) currentOverlayModal() string {
 
 	if m.AddAccountLoginVisible {
 		return m.renderAddAccountLoginModal()
+	}
+
+	if m.DeviceLoginVisible {
+		return m.renderDeviceLoginModal()
 	}
 
 	if m.ActionMenuVisible {
@@ -338,6 +342,36 @@ func (m Model) addAccountLoginURLContainsPoint(x, y int) bool {
 	urlTextHeight := layout.URLEndLine - layout.URLStartLine + 1
 
 	return x >= urlTextX && x < urlTextX+urlTextWidth && y >= urlTextY && y < urlTextY+urlTextHeight
+}
+
+func (m Model) renderDeviceLoginModal() string {
+	lines := []string{
+		InfoTitleStyle.Render("Connect ChatGPT account (device)"),
+		"",
+		InfoValueStyle.Render("1. Open this URL in your browser:"),
+		lipgloss.NewStyle().Foreground(lipgloss.Color("39")).Render(m.DeviceLoginVerifyURL),
+		"",
+		InfoValueStyle.Render("2. Enter this code:"),
+		lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("214")).Render(m.DeviceLoginUserCode),
+		"",
+		InfoValueStyle.Render("Waiting for authorization..."),
+	}
+	if strings.TrimSpace(m.DeviceLoginStatus) != "" {
+		lines = append(lines, NoticeStyle.Render(m.DeviceLoginStatus))
+	}
+	lines = append(lines, "")
+	lines = append(lines, ActionMenuHintStyle.Render("[c] Copy code   [u] Copy URL   [esc] Cancel"))
+
+	width := 56
+	for _, line := range lines {
+		if w := lipgloss.Width(line) + 4; w > width {
+			width = w
+		}
+	}
+	if width > 72 {
+		width = 72
+	}
+	return InfoBoxStyle.Copy().Width(width).Render(strings.Join(lines, "\n"))
 }
 
 func renderHelpLine(key, description string) string {

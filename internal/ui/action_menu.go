@@ -5,18 +5,19 @@ import (
 
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/deLiseLINO/codex-quota/internal/update"
+	"github.com/siren403/codex-quota/internal/update"
 )
 
 const (
-	actionMenuApply      = "apply"
-	actionMenuRefresh    = "refresh"
-	actionMenuRefreshAll = "refresh_all"
-	actionMenuInfo       = "info"
-	actionMenuAdd        = "add"
-	actionMenuView       = "view"
-	actionMenuDelete     = "delete"
-	actionMenuUpdate     = "update"
+	actionMenuApply       = "apply"
+	actionMenuRefresh     = "refresh"
+	actionMenuRefreshAll  = "refresh_all"
+	actionMenuInfo        = "info"
+	actionMenuAdd         = "add"
+	actionMenuAddDevice   = "add_device"
+	actionMenuView        = "view"
+	actionMenuDelete      = "delete"
+	actionMenuUpdate      = "update"
 )
 
 type actionMenuItem struct {
@@ -45,7 +46,8 @@ func (m Model) actionMenuSections() []actionMenuSection {
 			Title: "Global actions",
 			Items: []actionMenuItem{
 				{ID: actionMenuRefreshAll, Label: "Refresh all", Shortcut: "R"},
-				{ID: actionMenuAdd, Label: "Add account", Shortcut: "n"},
+				{ID: actionMenuAdd, Label: "Add account (browser)", Shortcut: "n"},
+				{ID: actionMenuAddDevice, Label: "Add account (device)", Shortcut: "d"},
 				{ID: actionMenuView, Label: "Switch view", Shortcut: "v"},
 			},
 		},

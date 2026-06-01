@@ -3,9 +3,9 @@ package ui
 import (
 	"time"
 
-	"github.com/deLiseLINO/codex-quota/internal/api"
-	"github.com/deLiseLINO/codex-quota/internal/config"
-	"github.com/deLiseLINO/codex-quota/internal/update"
+	"github.com/siren403/codex-quota/internal/api"
+	"github.com/siren403/codex-quota/internal/config"
+	"github.com/siren403/codex-quota/internal/update"
 )
 
 type DataMsg struct {
@@ -52,6 +52,18 @@ type AddAccountLoginFinishedMsg struct {
 type AddAccountLoginCopyResultMsg struct {
 	Text string
 	Err  error
+}
+
+type DeviceLoginStartedMsg struct {
+	UserCode  string
+	VerifyURL string
+}
+
+type DeviceLoginPendingMsg struct{}
+
+type DeviceLoginFinishedMsg struct {
+	Account *config.Account
+	Err     error
 }
 
 type UpdateAvailableMsg struct {

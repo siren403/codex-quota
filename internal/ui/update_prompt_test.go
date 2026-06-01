@@ -7,8 +7,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/deLiseLINO/codex-quota/internal/config"
-	"github.com/deLiseLINO/codex-quota/internal/update"
+	"github.com/siren403/codex-quota/internal/config"
+	"github.com/siren403/codex-quota/internal/update"
 )
 
 func TestInitialModelWithStartupUpdateShowsPrompt(t *testing.T) {
@@ -129,10 +129,10 @@ func TestRenderUpdatePromptModalExpandsInWideViewport(t *testing.T) {
 	m.Width = 160
 
 	out := ansi.Strip(m.renderUpdatePromptModal())
-	if !strings.Contains(out, "Release notes: https://github.com/deLiseLINO/codex-quota/releases/latest") {
+	if !strings.Contains(out, "Release notes: https://github.com/siren403/codex-quota/releases/latest") {
 		t.Fatalf("expected full release notes line in modal:\n%s", out)
 	}
-	if !strings.Contains(out, "1. Update now (runs `go install github.com/deLiseLINO/codex-quota/cmd/cq@latest`)") {
+	if !strings.Contains(out, "1. Update now (runs `go install github.com/siren403/codex-quota/cmd/cq@latest`)") {
 		t.Fatalf("expected full update command line in modal:\n%s", out)
 	}
 	if width := maxLineWidth(out); width > updatePromptModalMaxWidth {

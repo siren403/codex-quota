@@ -4,8 +4,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/deLiseLINO/codex-quota/internal/api"
-	"github.com/deLiseLINO/codex-quota/internal/config"
+	"github.com/siren403/codex-quota/internal/api"
+	"github.com/siren403/codex-quota/internal/config"
 )
 
 func (m *Model) setKnownPlanType(accountKey string, planType string) {

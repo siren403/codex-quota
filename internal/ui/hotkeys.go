@@ -5,7 +5,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/deLiseLINO/codex-quota/internal/api"
+	"github.com/siren403/codex-quota/internal/api"
 )
 
 func normalizeKey(key string) string {
@@ -91,6 +91,28 @@ func (m Model) handleHelpOverlay(keyStr string) (tea.Model, tea.Cmd) {
 	case "esc", "help":
 		m.resetHelpState()
 		return m, nil
+	}
+	return m, nil
+}
+
+func (m Model) handleDeviceLogin(keyStr string) (tea.Model, tea.Cmd) {
+	switch keyStr {
+	case "q", "ctrl+c":
+		m.resetDeviceLoginState()
+		return m, tea.Batch(CancelDeviceLoginCmd(), tea.Quit)
+	case "esc":
+		m.resetDeviceLoginState()
+		return m, CancelDeviceLoginCmd()
+	case "c":
+		if strings.TrimSpace(m.DeviceLoginUserCode) == "" {
+			return m, nil
+		}
+		return m, CopyToClipboardCmd(m.DeviceLoginUserCode)
+	case "u":
+		if strings.TrimSpace(m.DeviceLoginVerifyURL) == "" {
+			return m, nil
+		}
+		return m, CopyToClipboardCmd(m.DeviceLoginVerifyURL)
 	}
 	return m, nil
 }

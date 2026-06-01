@@ -6,9 +6,9 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/deLiseLINO/codex-quota/internal/api"
-	"github.com/deLiseLINO/codex-quota/internal/config"
-	"github.com/deLiseLINO/codex-quota/internal/update"
+	"github.com/siren403/codex-quota/internal/api"
+	"github.com/siren403/codex-quota/internal/config"
+	"github.com/siren403/codex-quota/internal/update"
 )
 
 func (m Model) confirmActionMenu() (tea.Model, tea.Cmd) {
@@ -38,6 +38,8 @@ func (m Model) confirmActionMenu() (tea.Model, tea.Cmd) {
 		return m, nil
 	case actionMenuAdd:
 		return m.beginAddAccount()
+	case actionMenuAddDevice:
+		return m.beginDeviceLogin()
 	case actionMenuView:
 		return m.toggleViewMode()
 	case actionMenuDelete:
@@ -209,6 +211,28 @@ func (m Model) beginAddAccount() (tea.Model, tea.Cmd) {
 	m.ShowInfo = false
 	m.Notice = ""
 	return m, StartAddAccountLoginCmd()
+}
+
+func (m Model) beginDeviceLogin() (tea.Model, tea.Cmd) {
+	if m.DeviceLoginVisible {
+		return m, nil
+	}
+	m.Loading = false
+	m.Err = nil
+	m.resetHelpState()
+	m.resetActionMenuState()
+	m.resetDeleteState()
+	m.resetApplyState()
+	m.ShowInfo = false
+	m.Notice = ""
+	return m, StartDeviceLoginCmd()
+}
+
+func (m *Model) resetDeviceLoginState() {
+	m.DeviceLoginVisible = false
+	m.DeviceLoginUserCode = ""
+	m.DeviceLoginVerifyURL = ""
+	m.DeviceLoginStatus = ""
 }
 
 func (m Model) beginApplyFlow() (tea.Model, tea.Cmd) {

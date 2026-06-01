@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/deLiseLINO/codex-quota/internal/config"
+	"github.com/siren403/codex-quota/internal/config"
 )
 
 const (

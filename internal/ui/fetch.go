@@ -2,17 +2,19 @@ package ui
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
 
+	osc52 "github.com/aymanbagabas/go-osc52/v2"
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/deLiseLINO/codex-quota/internal/api"
-	"github.com/deLiseLINO/codex-quota/internal/auth"
-	"github.com/deLiseLINO/codex-quota/internal/config"
+	"github.com/siren403/codex-quota/internal/api"
+	"github.com/siren403/codex-quota/internal/auth"
+	"github.com/siren403/codex-quota/internal/config"
 )
 
 func StartAddAccountLoginCmd() tea.Cmd {
@@ -45,6 +47,36 @@ func CancelAddAccountLoginCmd() tea.Cmd {
 	}
 }
 
+func StartDeviceLoginCmd() tea.Cmd {
+	return func() tea.Msg {
+		status, err := auth.StartDeviceLogin()
+		if err != nil {
+			return ErrMsg{Err: fmt.Errorf("device login failed: %w", err)}
+		}
+		return DeviceLoginStartedMsg{
+			UserCode:  status.UserCode,
+			VerifyURL: status.VerifyURL,
+		}
+	}
+}
+
+func PollDeviceLoginCmd() tea.Cmd {
+	return tea.Tick(300*time.Millisecond, func(_ time.Time) tea.Msg {
+		account, done, err := auth.PollDeviceLogin()
+		if !done {
+			return DeviceLoginPendingMsg{}
+		}
+		return DeviceLoginFinishedMsg{Account: account, Err: err}
+	})
+}
+
+func CancelDeviceLoginCmd() tea.Cmd {
+	return func() tea.Msg {
+		auth.CancelDeviceLogin()
+		return nil
+	}
+}
+
 func CopyToClipboardCmd(text string) tea.Cmd {
 	text = strings.TrimSpace(text)
 	if text == "" {
@@ -71,7 +103,7 @@ func CopyToClipboardCmd(text string) tea.Cmd {
 				cmd = exec.Command("xsel", "--clipboard", "--input")
 				break
 			}
-			return AddAccountLoginCopyResultMsg{Err: fmt.Errorf("no clipboard command found")}
+			return copyViaOSC52(text)
 		}
 
 		cmd.Stdin = strings.NewReader(text)
@@ -321,6 +353,26 @@ func DismissUpdateVersionCmd(version string) tea.Cmd {
 		_ = config.SetDismissedUpdateVersion(version)
 		return nil
 	}
+}
+
+func copyViaOSC52(text string) tea.Msg {
+	seq := osc52.New(text)
+	if os.Getenv("TMUX") != "" {
+		seq = seq.Mode(osc52.TmuxMode)
+	} else if os.Getenv("STY") != "" {
+		seq = seq.Mode(osc52.ScreenMode)
+	}
+
+	tty, err := os.OpenFile("/dev/tty", os.O_WRONLY, 0)
+	if err != nil {
+		return AddAccountLoginCopyResultMsg{Err: fmt.Errorf("no clipboard command found (OSC 52 unavailable: %w)", err)}
+	}
+	defer tty.Close()
+
+	if _, err := seq.WriteTo(tty); err != nil {
+		return AddAccountLoginCopyResultMsg{Err: fmt.Errorf("failed to copy via OSC 52: %w", err)}
+	}
+	return AddAccountLoginCopyResultMsg{Text: "Copied URL to clipboard (via OSC 52)."}
 }
 
 func cloneAccount(account *config.Account) *config.Account {
