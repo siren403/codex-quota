@@ -16,9 +16,10 @@ import (
 )
 
 const (
-	deviceUserCodeURL  = "https://auth.openai.com/api/accounts/deviceauth/usercode"
-	deviceTokenPollURL = "https://auth.openai.com/api/accounts/deviceauth/token"
-	DeviceVerifyURL    = "https://auth.openai.com/codex/device"
+	deviceUserCodeURL    = "https://auth.openai.com/api/accounts/deviceauth/usercode"
+	deviceTokenPollURL   = "https://auth.openai.com/api/accounts/deviceauth/token"
+	DeviceVerifyURL      = "https://auth.openai.com/codex/device"
+	deviceRedirectURI    = "https://auth.openai.com/deviceauth/callback"
 )
 
 type DeviceLoginStatus struct {
@@ -280,6 +281,7 @@ func exchangeDeviceCode(pollResp *deviceTokenPollResponse) (*tokenExchangeRespon
 	form.Set("client_id", oauthClientID)
 	form.Set("code", pollResp.AuthorizationCode)
 	form.Set("code_verifier", pollResp.CodeVerifier)
+	form.Set("redirect_uri", deviceRedirectURI)
 
 	req, err := http.NewRequest(http.MethodPost, oauthTokenURL, strings.NewReader(form.Encode()))
 	if err != nil {
