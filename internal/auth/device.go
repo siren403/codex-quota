@@ -280,7 +280,6 @@ func exchangeDeviceCode(pollResp *deviceTokenPollResponse) (*tokenExchangeRespon
 	form.Set("client_id", oauthClientID)
 	form.Set("code", pollResp.AuthorizationCode)
 	form.Set("code_verifier", pollResp.CodeVerifier)
-	form.Set("redirect_uri", redirectURI)
 
 	req, err := http.NewRequest(http.MethodPost, oauthTokenURL, strings.NewReader(form.Encode()))
 	if err != nil {
